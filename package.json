@@ -10,30 +10,59 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:highlight.helloWorld",
-        "onCommand:highlight.splitScreen"
+        "onCommand:timecomplexity.splitScreen",
+        "onCommand:timecomplexity.previousButton",
+		"onCommand:timecomplexity.nextButton"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "highlight.helloWorld",
-				"title": "Hello World"
+				"command": "timecomplexity.splitScreen",
+				"title": "Split Screen"
 			},
 			{
-				"command": "highlight.splitScreen",
-				"title": "Split Screen"
+				"command": "timecomplexity.previousButton",
+				"title": "Previous Button",
+					"icon": {
+						"light": "./media/icons/light/arrow-left.svg",
+						"dark": "./media/icons/dark/arrow-left.svg"
+					}
+			}, 
+			{
+				"command": "timecomplexity.nextButton",
+				"title": "Next Button",
+				    "icon": {
+						"light": "./media/icons/light/arrow-right.svg",
+						"dark": "./media/icons/dark/arrow-right.svg"
+					}
+			},
+			{
+				"command": "timecomplexity.displayCounter",
+				"title": "Display Counter"
 			}
-		]
+		],
+		"menus": {
+			"editor/title": [
+				{
+					"command": "timecomplexity.previousButton",
+					"group": "navigation"
+				},
+				{
+					"command": "timecomplexity.nextButton",
+					"group": "navigation"
+				}
+			]
+		}
 	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
 	"devDependencies": {
 		"@types/vscode": "^1.68.0",
 		"@types/glob": "^7.2.0",

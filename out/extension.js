@@ -1,249 +1,210 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
-const decorationtype = vscode.window.createTextEditorDecorationType({
-    backgroundColor: 'rgba(255, 255, 0, 0.2)',
-    isWholeLine: true
-});
-const PrimTrace = {
-    lineNum: 4,
-    varType: 'int',
-    varName: 'number',
-    varValue: 13,
-    textDesc: 'An int type is a primitive type.'
-};
-const RefTrace = {
-    lineNum: 5,
-    varType: 'string',
-    varName: 'string',
-    varValue: 'Go Gate',
-    textDesc: 'A strirng is a reference type.'
-};
-let currentState = RefTrace;
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-function highlight() {
-    let editor = vscode.window.activeTextEditor;
-    let position = new vscode.Position(currentState.lineNum - 1, 0);
-    let currentposition = new vscode.Range(position, position);
-    editor?.setDecorations(decorationtype, [currentposition]);
-}
+// status bar item declarations (next and previous buttons)
+let statusBarPreviousButton;
+let statusBarNextButton;
+// initializing the counter to be incremented and decremented
+let counter = 0;
+// initializing the panel for the counter to be displayed in
+let counterPanel;
+// creates a blank panel to the right
 function SplitScreen() {
-    //Creates a blank workspace to the right 
-    //Could also do above, below, or to the left if we prefer
     vscode.commands.executeCommand('workbench.action.newGroupRight');
-    vscode.window.showInformationMessage('Screen has been split');
 }
-function drawRectangle() {
-    return `<div id="canvasSection">
-		
-			<canvas id="myCanvas"
-			style="border:3px solid #FF1200"
-			width="500" height="200">
-			</canvas>
-		</div>
-		<script>
-			let canvas = document.getElementById("myCanvas");
-			let ctx = canvas.getContext("2d"); 
-			ctx.fillStyle = "#2ECC71";
-			ctx.fillRect(0, 0, 150, 75);
-			ctx.stroke();
-			
-		</script>
-		<noscript>It's not working :(</noscript>`;
+// defining the counter
+function defineCounter(value) {
+    return `<!DOCTYPE html>
+	<html lang="en">
+	<head>
+        <title>Counter</title>
+	</head>
+	<body>
+		<p>Counter: ${value}</p>
+	</body>
+	</html>`;
 }
-function getWebviewOptions(extensionUri) {
-    return {
-        enableScripts: true,
-        localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
-    };
+// update the counter in the right panel
+// occurs at every status bar button click
+function updateCounter(test, screen) {
+    // update the counter depending on the button clicked
+    if (test === true) {
+        counter = counter + 1;
+    }
+    else if (test === false) {
+        counter = counter - 1;
+    }
+    // display the counter
+    screen.webview.html = defineCounter(counter);
 }
-function Mailbox() {
-    return `<div id="canvasSection">
-		
-			<canvas id="myCanvas"
-				style="border:3px solid #FF1200"
-				width="500" height="200">
-			</canvas>
-			</div>
-			<script>
-				let canvas = document.getElementById("myCanvas");
-				let ctx = canvas.getContext("2d"); 
-				ctx.fillStyle = "#2ECC71";
-				ctx.fillRect(0, 0, 150, 75);
-				ctx.stroke();
-	
-				</script>
-			<noscript>It's not working :(</noscript>`;
-    //DrawingPanel!.currentPanel!.doRefactor(html);
+// create and return the panel that the counter is displayed in
+// occurs once at the activation of the counter
+function displayCounter() {
+    // create a webview window to display the table in
+    // link the webview window to the initialized panel so that it can be accessed in other functions
+    counterPanel = vscode.window.createWebviewPanel('displayCounter', 'Display Counter', vscode.ViewColumn.Two, // put the table in the second panel 
+    {});
+    // display the initial counter
+    counterPanel.webview.html = defineCounter(0);
 }
-//Draws a basic locker (still need to draw corresponding mailbox)
-function Locker() {
-    let refNum = 1;
-    return `<div id=LockerSection">
-				<canvas id="Lockers"
-					style="border:3px solid #4951c9"
-					width="500" height="200">
-				</canvas>
-			</div>
-			<script>
-				let canvas = document.getElementById("Lockers"); 
-				let ctx = canvas.getContext("2d"); 
-				ctx.fillStyle = "#76767a"; 
-				ctx.fillRect(100, 50, 300, 100);
+// hardcoded time complexity table
+function defineTable() {
+    return `<!DOCTYPE html>
+	<html lang="en">
 
-				ctx.fillStyle = "#99cf9b";
-				ctx.fillRect(200, 60, 190, 80)
+	<head>
+	<style>
+	table {
+		font-family: 'Courier New', monospace;
+		border-collapse: collapse;
+		width: 50%;
+		margin-left: auto;
+		margin-right: auto;
+	}
 
-				ctx.fillStyle = "#0b0b0d";
-				ctx.beginPath();
-				ctx.arc(150, 100, 40, 0, 2 * Math.PI);
-				ctx.fill();
+	td, th {
+		border: 1px solid #1b1c1c;
+		text-align: center;
+		padding: 7px;
+	}
+    
+    th {
+    	background-color: #f96650;
+        color: #ffffff;
+    }
 
-				ctx.beginPath();
-				ctx.fillStyle = "#404042";
-				ctx.arc(150, 100, 25, 0, 2*Math.PI);
-				ctx.fill();
+	.col {
+    	width: 33%;
+    }
 
-				ctx.textBaseline = "alphabetic"; 
-				ctx.textAlign = "start"; 
-				ctx.font = "15px Georgia";
-				ctx.fillText("Locker ${refNum}", 210, 75); 
+	tr {
+		background-color: #ffffff;
+		color: #1b1c1c;
+	}
 
-				ctx.textAlign = "center"; 
-				ctx.font = "25px Georgia"; 
-				ctx.fillText("${currentState.varValue}", 295, 120);
-				ctx.stroke();
+	tr + tr + tr + tr + tr + tr + tr {
+		background-color: #d6ff8c;
+		color: #1b1c1c;
+	}
+	</style>
+	</head>
 
-			</script>`;
+	<body>
+	<br>
+	<table class="table">
+    	<colgroup>
+        	<col class = "col" span = "3">
+        </colgroup>
+    
+		<tr>   <th>i</th><th>j</th><th>body</th>   </tr>
+	</table>
+	</body>
+
+	</html>`;
 }
-function ShowStartPage() {
-    //Just for now 
-    return Locker();
+// display time complexity table in the right panel
+function displayTable() {
+    // create a webview window to display the table in 
+    const panel = vscode.window.createWebviewPanel('displayTable', 'Display Table', vscode.ViewColumn.Two, // put the table in the second panel 
+    {});
+    // display the table
+    panel.webview.html = defineTable();
 }
+// hardcoded sample code
+function defineCode() {
+    return `<!DOCTYPE html>
+	<html lang="en">
+	<head>
+        <title>Code</title>
+	</head>
+
+	<body>
+        <div id="code">
+<pre>public void example(int [] arr) {</pre>
+<pre>    int sum = 0;</pre>
+<pre>    for (int i = 0; i < arr.length; i++) {</pre>
+<pre>        for (int j = 0; j < arr.length; j++) {</pre>
+<pre>            System.out.println(arr[i] + " " + arr[j]);</pre>
+<pre>        }</pre>
+<pre>    }</pre>
+<pre>}</pre>
+        </div>
+	</body>
+    
+	</html>`;
+}
+// display sample code in the left panel
+function displayCode() {
+    // create a webview window to display the code in 
+    const panel = vscode.window.createWebviewPanel('displayCode', 'Display Code', vscode.ViewColumn.One, // put the code in the first panel 
+    {});
+    panel.webview.html = defineCode();
+}
+// displays the inputted status bar item
+function displayStatusBarItem(item, text) {
+    item.text = text;
+    item.show();
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+// MAIN & ACTIVATION
 function activate(context) {
-    let disposable = vscode.commands.registerCommand('highlight.splitScreen', () => {
-        vscode.window.showInformationMessage('The extension is running!');
-        DrawingPanel.createOrShow(context.extensionUri);
-        highlight();
-    });
-    let disposable1 = vscode.commands.registerCommand('split-screen-template.drawingTest', () => {
-        vscode.window.showInformationMessage('Drawing...');
+    // SPLIT SCREEN
+    let disposable = vscode.commands.registerCommand('timecomplexity.splitScreen', () => {
+        vscode.window.showInformationMessage('Splitting the screen.');
+        SplitScreen();
     });
     context.subscriptions.push(disposable);
-    context.subscriptions.push(disposable1);
+    // DISPLAY TABLE
+    let disposable2 = vscode.commands.registerCommand('timecomplexity.displayTable', () => {
+        vscode.window.showInformationMessage('Displaying the table.');
+        displayTable();
+    });
+    context.subscriptions.push(disposable2);
+    // DISPLAY CODE
+    let disposable3 = vscode.commands.registerCommand('timecomplexity.displayCode', () => {
+        vscode.window.showInformationMessage('Displaying the code.');
+        displayCode();
+    });
+    context.subscriptions.push(disposable3);
+    // DISPLAY COUNTER
+    let disposable6 = vscode.commands.registerCommand('timecomplexity.displayCounter', () => {
+        vscode.window.showInformationMessage('Displaying the counter.');
+        displayCounter();
+        updateCounter(null, counterPanel);
+    });
+    context.subscriptions.push(disposable6);
+    // NEXT BUTTON
+    // register a command that is invoked when the status bar item (next button) is selected
+    let disposable4 = vscode.commands.registerCommand('timecomplexity.previousButton', () => {
+        vscode.window.showInformationMessage('Jumping to previous step.');
+        // connecting status bar button to the counter
+        updateCounter(false, counterPanel);
+    });
+    let disposable5 = vscode.commands.registerCommand('timecomplexity.nextButton', () => {
+        vscode.window.showInformationMessage('Jumping to next step.');
+        // connecting status bar button to the counter
+        updateCounter(true, counterPanel);
+    });
+    context.subscriptions.push(disposable4);
+    context.subscriptions.push(disposable5);
+    // create the status bar item (next button)
+    // statusBarNextButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    // statusBarNextButton.command = 'timecomplexity.nextButton';
+    // context.subscriptions.push(statusBarNextButton);
+    // display the status bar item once
+    // displayStatusBarItem(statusBarNextButton, '$(arrow-right)');
+    // PREVIOUS BUTTON
+    // register a command that is invoked when the status bar item (previous button) is selected
+    // create the status bar item (previous button)
+    // statusBarPreviousButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    // statusBarPreviousButton.command = 'timecomplexity.previousButton';
+    // context.subscriptions.push(statusBarPreviousButton);
+    // // display the status bar item
+    // displayStatusBarItem(statusBarPreviousButton, '$(arrow-left)');
 }
 exports.activate = activate;
-class DrawingPanel {
-    constructor(panel, extensionUri) {
-        this._disposables = [];
-        this._panel = panel;
-        this._extensionUri = extensionUri;
-        //Set initial html content
-        this._update(ShowStartPage());
-        this._panel.onDidChangeViewState(e => {
-            if (this._panel.visible) {
-                this._update(ShowStartPage());
-            }
-        }, null, this._disposables);
-    }
-    //Make a data structure of trace info 
-    static createOrShow(extensionUri) {
-        const column = vscode.window.activeTextEditor
-            ? vscode.window.activeTextEditor.viewColumn
-            : undefined;
-        if (DrawingPanel.currentPanel) {
-            DrawingPanel.currentPanel._panel.reveal(column);
-            return;
-        }
-        const panel = vscode.window.createWebviewPanel(DrawingPanel.viewType, 'Visualization', vscode.ViewColumn.Two, //Always appear in the split side 
-        getWebviewOptions(extensionUri));
-        DrawingPanel.currentPanel = new DrawingPanel(panel, extensionUri);
-    }
-    static revive(panel, extensionUri) {
-        DrawingPanel.currentPanel = new DrawingPanel(panel, extensionUri);
-    }
-    doRefactor(drawingType) {
-        let html = drawingType;
-        this._update(drawingType);
-    }
-    dispose() {
-        DrawingPanel.currentPanel = undefined;
-        this._panel.dispose();
-        while (this._disposables.length) {
-            const x = this._disposables.pop();
-            if (x) {
-                x.dispose();
-            }
-        }
-    }
-    _update(drawing) {
-        const webview = this._panel.webview;
-        this._panel.title = "Visualization";
-        let fillerHtml = drawing;
-        this._panel.webview.html = this._getHtmlForWebview(webview, fillerHtml);
-    }
-    _getHtmlForWebview(webview, Html) {
-        const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js');
-        const scriptUri = webview.asWebviewUri(scriptPathOnDisk);
-        const styleResetPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css');
-        const stylesPathMainPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css');
-        const stylesResetUri = webview.asWebviewUri(styleResetPath);
-        const stylesMainUri = webview.asWebviewUri(stylesPathMainPath);
-        const nonce = getNonce();
-        //for now just do the rectangle stuff
-        return `<!DOCTYPE html>
-				<html lang="en">
-				<head>
-					<meta charset="UTF-8">
-
-					<!--
-							Use a content security policy to only allow loading images from https or from our extension directory, 
-							and only allow scripts that have a specific nonce. 
-					-->
-					<meta http-equiv="Content-Secutity-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';">
-					<meta name = "viewport" content="width=device-width, initial-scale=1.0">
-
-					<link href="${stylesResetUri}" rel="stylesheet">
-					<link href="${stylesMainUri}" rel="stylesheet">
-
-					<title>Visualizer</title>
-				</head>
-				<style>
-				.button {
-					background-color: #96EBE5;
-					border: none;
-					color: black;
-					padding: 15px 32px;
-					text-align: center;
-					text-decoration: none;
-					display: inline-block; 
-					font-size: 16px; 
-					margin: 4px 2px;
-					cursor: pointer; 
-						
-				}
-				</style>
-				<body>
-					${Html}
-				</body>
-				</html>`;
-    }
-}
-DrawingPanel.viewType = "drawing";
-function getNonce() {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 32; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-}
-// this method is called when your extension is deactivated
-function deactivate() {
-}
+// this method is called when the extension is deactivated
+function deactivate() { }
 exports.deactivate = deactivate;
 //# sourceMappingURL=extension.js.map
