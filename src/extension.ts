@@ -36,7 +36,6 @@ let currentState = RefTrace;
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function highlight(){
-	//get current editor
 	let editor = vscode.window.activeTextEditor;
 	let position = new vscode.Position(currentState.lineNum-1, 0);
 	let currentposition = new vscode.Range(position, position);
@@ -71,11 +70,6 @@ return	`<div id="canvasSection">
 
 }
 
-
-
-function HighlightTest(line:number){
-	vscode.commands.executeCommand('editor.action.wordHighlight.trigger');
-}
 
 function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions{
 	return{
