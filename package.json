@@ -11,8 +11,8 @@
 	],
 	"activationEvents": [
         "onCommand:timecomplexity.splitScreen",
-        "onCommand:timecomplexity.previousButton",
-		"onCommand:timecomplexity.nextButton"
+    //     "onCommand:timecomplexity.previousButton",
+	// 	"onCommand:timecomplexity.nextButton"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -21,39 +21,39 @@
 				"command": "timecomplexity.splitScreen",
 				"title": "Split Screen"
 			},
-			{
-				"command": "timecomplexity.previousButton",
-				"title": "Previous Button",
-					"icon": {
-						"light": "./media/icons/light/arrow-left.svg",
-						"dark": "./media/icons/dark/arrow-left.svg"
-					}
-			}, 
-			{
-				"command": "timecomplexity.nextButton",
-				"title": "Next Button",
-				    "icon": {
-						"light": "./media/icons/light/arrow-right.svg",
-						"dark": "./media/icons/dark/arrow-right.svg"
-					}
-			},
-			{
-				"command": "timecomplexity.displayCounter",
-				"title": "Display Counter"
-			}
-		],
-		"menus": {
-			"editor/title": [
-				{
-					"command": "timecomplexity.previousButton",
-					"group": "navigation"
-				},
-				{
-					"command": "timecomplexity.nextButton",
-					"group": "navigation"
-				}
-			]
-		}
+		// 	{
+		// 		"command": "timecomplexity.previousButton",
+		// 		"title": "Previous Button",
+		// 			"icon": {
+		// 				"light": "./media/icons/light/arrow-left.svg",
+		// 				"dark": "./media/icons/dark/arrow-left.svg"
+		// 			}
+		// 	}, 
+		// 	{
+		// 		"command": "timecomplexity.nextButton",
+		// 		"title": "Next Button",
+		// 		    "icon": {
+		// 				"light": "./media/icons/light/arrow-right.svg",
+		// 				"dark": "./media/icons/dark/arrow-right.svg"
+		// 			}
+		// 	},
+		// 	{
+		// 		"command": "timecomplexity.displayCounter",
+		// 		"title": "Display Counter"
+		// 	}
+		// ],
+		// "menus": {
+		// 	"editor/title": [
+		// 		{
+		// 			"command": "timecomplexity.previousButton",
+		// 			"group": "navigation"
+		// 		},
+		// 		{
+		// 			"command": "timecomplexity.nextButton",
+		// 			"group": "navigation"
+		// 		}
+		// 	]
+		// }
 	},
   "scripts": {
     "vscode:prepublish": "npm run compile",

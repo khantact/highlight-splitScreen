@@ -3,10 +3,6 @@
 import { getVSCodeDownloadUrl } from '@vscode/test-electron/out/util';
 import * as vscode from 'vscode';
 
-// status bar item declarations (next and previous buttons)
-let statusBarPreviousButton: vscode.StatusBarItem;
-let statusBarNextButton: vscode.StatusBarItem;
-
 // initializing the counter to be incremented and decremented
 let counter = 0;
 // initializing the panel for the counter to be displayed in
@@ -39,6 +35,8 @@ function defineCounter(value: number) {
 // update the counter in the right panel
 // occurs at every status bar button click
 
+//*Changes*
+// Changed paramter to boolean
 function updateCounter(test: boolean | null, screen: vscode.WebviewPanel) {
 	// update the counter depending on the button clicked
 	if (test === true) {
@@ -237,6 +235,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// NEXT BUTTON
 	// register a command that is invoked when the status bar item (next button) is selected
+
+	// *Changes*
 	let disposable4 = vscode.commands.registerCommand('timecomplexity.previousButton', () => {
 		vscode.window.showInformationMessage('Jumping to previous step.');
 		// connecting status bar button to the counter
@@ -249,25 +249,6 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable4); 
 	context.subscriptions.push(disposable5); 
-
-	// create the status bar item (next button)
-	// statusBarNextButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-	// statusBarNextButton.command = 'timecomplexity.nextButton';
-	// context.subscriptions.push(statusBarNextButton);
-
-	// display the status bar item once
-	// displayStatusBarItem(statusBarNextButton, '$(arrow-right)');
-
-	// PREVIOUS BUTTON
-	// register a command that is invoked when the status bar item (previous button) is selected
-
-	// create the status bar item (previous button)
-	// statusBarPreviousButton = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-	// statusBarPreviousButton.command = 'timecomplexity.previousButton';
-	// context.subscriptions.push(statusBarPreviousButton);
-
-	// // display the status bar item
-	// displayStatusBarItem(statusBarPreviousButton, '$(arrow-left)');
 }
 
 
